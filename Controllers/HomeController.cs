@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Web_Downloader_Hub.Models;
+using Web_Downloader_Hub.Serivce;
 
 namespace Web_Downloader_Hub.Controllers
 {
@@ -8,11 +9,27 @@ namespace Web_Downloader_Hub.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
+        private DownloadService _downloadService;
+
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
 
+        // POST Request to get information about url
+        [HttpPost("add")]
+        public IActionResult Add([FromBody] string url)
+        {
+            try
+            {
+                DownloadRecord result = _downloadService.AddToQueue(url);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         public IActionResult Index()
         {
             return View();

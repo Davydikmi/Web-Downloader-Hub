@@ -1,8 +1,49 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Главная";
 }
+<link rel="stylesheet" href="~/css/mainStyle.css" asp-append-version="true" />
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="topbar mb-4">
+        <h2>Web Downloader Hub</h2>
+        <div>
+            <a class="btn btn-secondary me-2" href="/">Главная</a>
+            <a class="btn btn-secondary" href="/History">История</a>
+        </div>
+    </div>
+
+    <!-- Input form -->
+    <form id="downloadForm" class="form-inline mb-3">
+        <input type="text" id="urlInput" class="form-control" placeholder="Введите ссылку..." required />
+        <button class="btn btn-primary" type="submit">Добавить</button>
+    </form>
+
+    <!-- Список файлов -->
+    <div id="fileList">
+        <div class="file-item shadow-sm" data-id="file1">
+            <div class="file-header">
+                <div>
+                    <strong>video.mp4</strong><br />
+                    <small><a href="https://example.com/video.mp4" target="_blank">https://example.com/video.mp4</a></small><br />
+                    <small>5.2 MB • 07.05.2025</small>
+                </div>
+                <div class="btn-group actions">
+                    <img src="~/img/repeat.png" class="icon-btn repeat-icon" alt="Повторить" title="Повторить" />
+                    <img src="~/img/trash.png" class="icon-btn trash-icon" alt="Удалить" title="Удалить" />
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="mb-3 d-flex gap-2 flex-wrap">
+        <button class="btn btn-danger" id="clearListBtn">Очистить</button>
+        <button class="btn btn-success" id="downloadBtn">Скачать</button>
+        <button class="btn btn-info" id="qrBtn">Скачать по QR</button>
+    </div>
 </div>
+
+<script src="~/js/mainScript.js"></script>
