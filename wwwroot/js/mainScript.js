@@ -1,4 +1,6 @@
-﻿document.getElementById("downloadForm").addEventListener("submit", function (e) {
+﻿
+// POST запрос на добавление элемента в список
+document.getElementById("downloadForm").addEventListener("submit", function (e) {
     e.preventDefault();
     const url = document.getElementById("urlInput").value;
     const errorContainer = document.getElementById("errorContainer");
@@ -43,4 +45,25 @@
         .catch(error => {
             errorContainer.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
         });
+});
+
+// POST запрос на удаление элемента из списка
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("trash-icon")) {
+        const fileItem = e.target.closest(".file-item");
+        const filename = fileItem.querySelector("strong").textContent;
+
+        fetch("/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ filename })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Ошибка при удалении файла.");
+            fileItem.remove();
+        })
+        .catch(error => {
+            alert(error.message);
+        });
+    }
 });

@@ -39,13 +39,12 @@ namespace Web_Downloader_Hub.Serivce
             return record;
         }
 
-        public void DeleteFromQueue(Guid id)
+        public void DeleteFromQueue(string fileName)
         {
             string downloadDir = Path.Combine(AppContext.BaseDirectory, "Downloads");
-
-
-
-
+            string filePath = Path.Combine(downloadDir, fileName);
+            if (File.Exists(filePath)) File.Delete(filePath);
+            // здесь также можно добавить удаление файла из бд
         }
 
 

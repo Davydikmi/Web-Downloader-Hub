@@ -20,9 +20,21 @@ namespace Web_Downloader_Hub.Serivce.Handlers
                 "image/png" => ".png",
                 "image/jpeg" => ".jpg",
                 "image/gif" => ".gif",
+
                 "text/plain" => ".txt",
+
+                "video/mp4" => ".mp4",
+                "video/webm" => ".webm",
+                "video/ogg" => ".ogv",
+                "video/quicktime" => ".mov",
+                "video/x-msvideo" => ".avi",
+                "video/x-flv" => ".flv",
+                "video/mpeg" => ".mpeg",
+                "application/octet-stream" => ".mp4",
+
                 _ => ".bin"
             };
+
 
             string fileName = $"data_uri_{Guid.NewGuid()}{extension}";
 

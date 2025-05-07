@@ -18,11 +18,11 @@ namespace Web_Downloader_Hub.Controllers
 
 
 
-        // POST Request to get information about url
+        // POST пост запрос на добавление элемента в список
         [HttpPost("add")]
         public IActionResult Add([FromBody] string url)
         {
-            DownloadService _downloadService  = new DownloadService();
+            DownloadService _downloadService = new DownloadService();
             try
             {
                 DownloadRecord result = _downloadService.AddToQueue(url);
@@ -33,6 +33,23 @@ namespace Web_Downloader_Hub.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        // POST запрос на удаление элемента
+        [HttpPost("/delete")]
+        public IActionResult Delete([FromBody] DownloadRecord record)
+        {
+            DownloadService _downloadService = new DownloadService();
+            try
+            {
+                _downloadService.DeleteFromQueue(record.filename);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         public IActionResult Index()
         {
             return View();
