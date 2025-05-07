@@ -9,17 +9,20 @@ namespace Web_Downloader_Hub.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        private DownloadService _downloadService;
+
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
 
+
+
         // POST Request to get information about url
         [HttpPost("add")]
         public IActionResult Add([FromBody] string url)
         {
+            DownloadService _downloadService  = new DownloadService();
             try
             {
                 DownloadRecord result = _downloadService.AddToQueue(url);

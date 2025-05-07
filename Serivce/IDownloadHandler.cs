@@ -4,8 +4,5 @@
     public interface IDownloadHandler
     {  
         string Download(string url);
-
-
-
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Web_Downloader_Hub.Models;
-
+using System.IO;
+using System;
+using Web_Downloader_Hub.Serivce.Handlers;
 namespace Web_Downloader_Hub.Serivce
 {
     public class DownloadService
@@ -8,16 +10,19 @@ namespace Web_Downloader_Hub.Serivce
         {
             // Проверка валидности
             if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+             {
+                Console.WriteLine("Неверный формат URL");
                 throw new Exception("Неверный формат URL");
+            }
 
             // Выбор правильного загрузчика
             var handler = HandlerSelectorService.GetHandler(url);
 
             // Скачивание файла
-            var filePath = handler.Download(url);
+            string filePath = handler.Download(url);
 
             // Получение информации о файле
-            var fileInfo = FileService.GetFileInfo(filePath);
+            FileInfo fileInfo = FileService.GetFileInfo(filePath);
 
             // Сохранение записи
             var record = new DownloadRecord
@@ -27,9 +32,20 @@ namespace Web_Downloader_Hub.Serivce
                 filename = fileInfo.Name,
                 FileSize = fileInfo.Length,
                 filepath = filePath,
-                DownloadDate = DateTime.Now
+                DownloadDate = DateTime.Now,
             };
+
+            // добавление записи в json в классе DatabaseService
             return record;
+        }
+
+        public void DeleteFromQueue(Guid id)
+        {
+            string downloadDir = Path.Combine(AppContext.BaseDirectory, "Downloads");
+
+
+
+
         }
 
 
