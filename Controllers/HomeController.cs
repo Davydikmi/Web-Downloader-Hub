@@ -50,6 +50,21 @@ namespace Web_Downloader_Hub.Controllers
             }
         }
 
+        [HttpPost("/clear-all")]
+        public IActionResult ClearAll([FromBody] List<string> filenames)
+        {
+            DownloadService _downloadService = new DownloadService();
+            try
+            {
+                _downloadService.DeleteFiles(filenames);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         public IActionResult Index()
         {
             return View();

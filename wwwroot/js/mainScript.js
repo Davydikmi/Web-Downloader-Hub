@@ -1,4 +1,6 @@
 ﻿
+// ======= POST Запросы =======
+
 // POST запрос на добавление элемента в список
 document.getElementById("downloadForm").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -66,4 +68,30 @@ document.addEventListener("click", function (e) {
             alert(error.message);
         });
     }
+});
+
+
+// POST запрос на очистку очереди
+document.getElementById("clearListBtn").addEventListener("click", function () {
+    // Собираем все имена файлов из списка
+    const fileItems = document.querySelectorAll(".file-item");
+    const filenames = Array.from(fileItems).map(item =>
+        item.querySelector("strong").textContent
+    );
+
+    if (filenames.length === 0) return;
+
+    fetch("/clear-all", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(filenames)
+    })
+        .then(response => {
+            if (!response.ok) throw new Error("Не удалось очистить список.");
+            // Удаляем все элементы с экрана
+            fileItems.forEach(item => item.remove());
+        })
+        .catch(error => {
+            alert(error.message);
+        });
 });

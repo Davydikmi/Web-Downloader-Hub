@@ -47,7 +47,19 @@ namespace Web_Downloader_Hub.Serivce
             // здесь также можно добавить удаление файла из бд
         }
 
+        public void DeleteFiles(List<string> filenames)
+        {
+            string downloadDir = Path.Combine(AppContext.BaseDirectory, "Downloads");
 
+            foreach (var name in filenames)
+            {
+                string filePath = Path.Combine(downloadDir, name);
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
+            }
+
+            // можно также очистить очередь из памяти или БД
+        }
 
 
 
