@@ -2,7 +2,7 @@
 
 namespace Web_Downloader_Hub.Serivce.Handlers
 {
-    public class DataUriHandler:IDownloadHandler
+    public class DataUriDownloadHandler:IDownloadHandler
     {
         public string Download(string url)
         {

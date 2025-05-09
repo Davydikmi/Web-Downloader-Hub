@@ -5,13 +5,14 @@
     {
         public static IDownloadHandler GetHandler(string url)
         {
-            if (url.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
-                return new DataUriHandler();
+            if (url.StartsWith("data:", StringComparison.OrdinalIgnoreCase)) return new DataUriDownloadHandler();
 
-            //if (url.Contains("youtube.com"))
-            //    return new YouTubeHandler();
+            else if (url.Contains("youtube.com") || url.Contains("youtu.be")) return new YouTubeDownloadHandler();
 
-            return new HttpHandler();
+            else if (url.Contains("x.com")) return new TwitterDownloadHandler();
+
+            return new HttpDownloadHandler();
+
         }
     }
 }

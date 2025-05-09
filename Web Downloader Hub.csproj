@@ -7,4 +7,9 @@
     <RootNamespace>Web_Downloader_Hub</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.6.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
 </Project>

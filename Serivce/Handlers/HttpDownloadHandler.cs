@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Web_Downloader_Hub.Serivce.Handlers
 {
-    public class HttpHandler : IDownloadHandler
+    public class HttpDownloadHandler : IDownloadHandler
     {
         public string Download(string url)
         {
