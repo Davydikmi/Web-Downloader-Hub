@@ -1,5 +1,4 @@
-﻿
-// ======= POST Запросы =======
+﻿// ======= POST Запросы =======
 
 // POST запрос на добавление элемента в список
 document.getElementById("downloadForm").addEventListener("submit", function (e) {
@@ -24,7 +23,7 @@ document.getElementById("downloadForm").addEventListener("submit", function (e) 
                 : fullUrl;
 
             const html = `
-        <div class="file-item shadow-sm" data-id="${record.id}">
+        <div class="file-item shadow-sm" data-id="${record.id}" data-filepath="${record.filepath}">
             <div class="file-header">
                 <div>
                     <strong>${record.filename}</strong><br />
@@ -94,4 +93,36 @@ document.getElementById("clearListBtn").addEventListener("click", function () {
         .catch(error => {
             alert(error.message);
         });
+});
+
+// POST запрос на скачивание файлов
+document.getElementById("downloadBtn").addEventListener("click", function () {
+    const fileItems = document.querySelectorAll(".file-item");
+    const filePaths = [];
+
+    fileItems.forEach(item => {
+        const filepath = item.getAttribute("data-filepath");
+        if (filepath) filePaths.push(filepath);
+    });
+
+    fetch("/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(filePaths)
+    })
+        .then(response => {
+            if (!response.ok) throw new Error("Ошибка при скачивании файлов.");
+            return response.blob().then(blob => ({ blob, response }));
+        })
+        .then(({ blob, response }) => {
+            const contentDisposition = response.headers.get("Content-Disposition");
+            const filenameMatch = contentDisposition && contentDisposition.match(/filename="?([^"]+)"?/);
+            const filename = filenameMatch ? filenameMatch[1] : "download.zip";
+
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        })
+        .catch(error => alert(error.message));
 });

@@ -1,2 +1,10 @@
 ﻿body {
+    background-color: #f7f9fc;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

@@ -50,6 +50,23 @@ namespace Web_Downloader_Hub.Controllers
             }
         }
 
+        [HttpPost("/download")]
+        public IActionResult DownloadFiles([FromBody] List<string> filePaths)
+        {
+            DownloadService _downloadService = new DownloadService();
+
+            try
+            {
+                var result = _downloadService.PrepareDownload(filePaths);
+                return File(result.Data, result.ContentType, result.FileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPost("/clear-all")]
         public IActionResult ClearAll([FromBody] List<string> filenames)
         {
@@ -70,6 +87,10 @@ namespace Web_Downloader_Hub.Controllers
             return View();
         }
 
+        public IActionResult History()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();
