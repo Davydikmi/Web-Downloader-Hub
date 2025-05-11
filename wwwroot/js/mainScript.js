@@ -22,77 +22,100 @@ document.getElementById("downloadForm").addEventListener("submit", function (e) 
                 ? fullUrl.substring(0, 47) + "..."
                 : fullUrl;
 
+            const fileSizeMB = (record.fileSize / 1048576).toFixed(2); // bytes → MB
+            const displayDate = new Date(record.downloadDate).toLocaleDateString();
+
             const html = `
-        <div class="file-item shadow-sm" data-id="${record.id}" data-filepath="${record.filepath}">
-            <div class="file-header">
-                <div>
-                    <strong>${record.filename}</strong><br />
-                    <small>
-                        <a href="${fullUrl}" target="_blank" title="${fullUrl}">
-                            ${shortUrl}
-                        </a>
-                    </small><br />
-                    <small>${(record.fileSize / 1048576).toFixed(2)} MB • ${new Date(record.downloadDate).toLocaleDateString()}</small>
-                </div>
-                <div class="btn-group actions">
-                    <img src="/img/repeat.png" class="icon-btn repeat-icon" alt="Повторить" title="Повторить" />
-                    <img src="/img/trash.png" class="icon-btn trash-icon" alt="Удалить" title="Удалить" />
-                </div>
+    <div class="file-item shadow-sm" data-id="${record.id}" data-filepath="${record.filepath}">
+        <div class="file-header">
+            <div>
+                <strong>${record.filename}</strong><br />
+                <small>
+                    <a href="${fullUrl}" target="_blank" title="${fullUrl}">
+                        ${shortUrl}
+                    </a>
+                </small><br />
+                <small>${fileSizeMB} MB • ${displayDate}</small>
             </div>
-        </div>`;
+            <div class="btn-group actions">
+                <img src="/img/repeat.png" class="icon-btn repeat-icon" alt="Повторить" title="Повторить" />
+                <img src="/img/trash.png" class="icon-btn trash-icon" alt="Удалить" title="Удалить" />
+            </div>
+        </div>
+    </div>`;
             document.getElementById("fileList").insertAdjacentHTML("beforeend", html);
             document.getElementById("urlInput").value = "";
         })
-        .catch(error => {
-            errorContainer.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
-        });
+
 });
 
 // POST запрос на удаление элемента из списка
 document.addEventListener("click", function (e) {
     if (e.target.classList.contains("trash-icon")) {
         const fileItem = e.target.closest(".file-item");
+        const id = fileItem.dataset.id;
+        const filepath = fileItem.dataset.filepath;
         const filename = fileItem.querySelector("strong").textContent;
+        const url = fileItem.querySelector("a").href;
+        const infoText = fileItem.querySelectorAll("small")[1].textContent;
+        const fileSize = extractFileSize(infoText);
+
+        const record = {
+            id: id,
+            filepath: filepath,
+            filename: filename,
+            url: url,
+            fileSize: fileSize,
+            downloadDate: new Date().toISOString()
+        };
 
         fetch("/delete", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ filename })
+            body: JSON.stringify(record)
         })
-        .then(response => {
-            if (!response.ok) throw new Error("Ошибка при удалении файла.");
-            fileItem.remove();
-        })
-        .catch(error => {
-            alert(error.message);
-        });
+            .then(response => {
+                if (!response.ok) throw new Error("Ошибка при удалении элемента.");
+                fileItem.remove();
+            })
+            .catch(error => alert(error.message));
     }
 });
 
 
+
+
 // POST запрос на очистку очереди
 document.getElementById("clearListBtn").addEventListener("click", function () {
-    // Собираем все имена файлов из списка
     const fileItems = document.querySelectorAll(".file-item");
-    const filenames = Array.from(fileItems).map(item =>
-        item.querySelector("strong").textContent
-    );
+    if (fileItems.length === 0) return;
 
-    if (filenames.length === 0) return;
+    const records = Array.from(fileItems).map(item => {
+        const filename = item.querySelector("strong").textContent;
+        const url = item.querySelector("a").href;
+        const infoText = item.querySelectorAll("small")[1].textContent;
+        const fileSize = extractFileSize(infoText);
+
+        return {
+            id: item.dataset.id,
+            filepath: item.dataset.filepath,
+            filename: filename,
+            url: url,
+            fileSize: fileSize,
+            downloadDate: new Date().toISOString()
+        };
+    });
 
     fetch("/clear-all", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(filenames)
+        body: JSON.stringify(records)
     })
         .then(response => {
             if (!response.ok) throw new Error("Не удалось очистить список.");
-            // Удаляем все элементы с экрана
             fileItems.forEach(item => item.remove());
         })
-        .catch(error => {
-            alert(error.message);
-        });
+        .catch(error => alert(error.message));
 });
 
 // POST запрос на скачивание файлов
@@ -126,3 +149,14 @@ document.getElementById("downloadBtn").addEventListener("click", function () {
         })
         .catch(error => alert(error.message));
 });
+
+
+
+// Функция безопасного парсинга fileSize из текста
+function extractFileSize(text) {
+    // пример строки: "1.25 MB • 11.05.2025" или "1,25 MB • 11.05.2025"
+    const match = text.match(/([\d.,]+)\s*MB/i);
+    if (!match) return 0;
+    const number = match[1].replace(",", ".");
+    return Math.round(parseFloat(number) * 1048576); // MB → bytes
+}

@@ -5,6 +5,7 @@ namespace Web_Downloader_Hub.Serivce
 {
     public class DownloadService
     {
+        HistoryStatService historyStatService = new HistoryStatService();
         public DownloadRecord AddToQueue(string url)
         {
             // Проверка валидности
@@ -34,30 +35,30 @@ namespace Web_Downloader_Hub.Serivce
                 DownloadDate = DateTime.Now,
             };
 
-            // добавление записи в json в классе DatabaseService
+            historyStatService.AddRecord(record);
             return record;
         }
 
-        public void DeleteFromQueue(string fileName)
+        public void DeleteFromQueue(DownloadRecord record)
         {
             string downloadDir = Path.Combine(AppContext.BaseDirectory, "Downloads");
-            string filePath = Path.Combine(downloadDir, fileName);
+            string filePath = Path.Combine(downloadDir, record.filename);
             if (File.Exists(filePath)) File.Delete(filePath);
-            // здесь также можно добавить удаление файла из бд
+            historyStatService.DeleteRecord(record);
         }
 
-        public void DeleteFiles(List<string> filenames)
+        public void DeleteFiles(List<DownloadRecord> records)
         {
             string downloadDir = Path.Combine(AppContext.BaseDirectory, "Downloads");
 
-            foreach (var name in filenames)
+            foreach (var record in records)
             {
-                string filePath = Path.Combine(downloadDir, name);
+                string filePath = Path.Combine(downloadDir, record.filename);
                 if (File.Exists(filePath))
                     File.Delete(filePath);
             }
 
-            // можно также очистить очередь из памяти или БД
+            historyStatService.ClearRecords();
         }
 
         public (byte[] Data, string FileName, string ContentType) PrepareDownload(List<string> filePaths)

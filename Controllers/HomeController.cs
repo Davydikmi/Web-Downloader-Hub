@@ -34,21 +34,7 @@ namespace Web_Downloader_Hub.Controllers
             }
         }
 
-        // POST запрос на удаление элемента
-        [HttpPost("/delete")]
-        public IActionResult Delete([FromBody] DownloadRecord record)
-        {
-            DownloadService _downloadService = new DownloadService();
-            try
-            {
-                _downloadService.DeleteFromQueue(record.filename);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+
 
         [HttpPost("/download")]
         public IActionResult DownloadFiles([FromBody] List<string> filePaths)
@@ -66,14 +52,34 @@ namespace Web_Downloader_Hub.Controllers
             }
         }
 
+        // POST запрос на удаление элемента
+        [HttpPost("/delete")]
+        public IActionResult Delete([FromBody] DownloadRecord record)
+        {
+            if (record == null)
+            {
+                return BadRequest("Record is null");
+            }
+
+            try
+            {
+                DownloadService _downloadService = new DownloadService();
+                _downloadService.DeleteFromQueue(record);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Ошибка: {ex.Message}");
+            }
+        }
 
         [HttpPost("/clear-all")]
-        public IActionResult ClearAll([FromBody] List<string> filenames)
+        public IActionResult ClearAll([FromBody] List<DownloadRecord> records)
         {
             DownloadService _downloadService = new DownloadService();
             try
             {
-                _downloadService.DeleteFiles(filenames);
+                _downloadService.DeleteFiles(records);
                 return Ok();
             }
             catch (Exception ex)
