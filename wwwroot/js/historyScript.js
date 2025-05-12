@@ -1,5 +1,5 @@
 ﻿let currentPage = 1;
-let recordsPerPage = 15;
+let recordsPerPage =  10;
 let allRecords = []; // данные записей с файла
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -38,17 +38,18 @@ function renderPage(page) {
         const fileSizeMB = (record.fileSize / 1048576).toFixed(2);
         const displayDate = new Date(record.downloadDate).toLocaleDateString();
         const item = `
-        <div class="file-item" data-id="${record.id}" data-filepath="${record.filepath}">
-            <div>
-                <strong>${record.filename}</strong><br />
-                <small><a href="${record.url}" target="_blank">${record.url}</a></small><br />
-                <small>${fileSizeMB} MB • ${displayDate}</small>
-            </div>
-            <div class="actions">
-                <img src="/img/repeat.png" class="icon-btn repeat-icon" title="Повторить" />
-                <img src="/img/trash.png" class="icon-btn trash-icon" title="Удалить" />
-            </div>
-        </div>`;
+<div class="file-item" data-id="${record.id}" data-filepath="${record.filepath}">
+    <div>
+        <strong>${record.filename}</strong><br />
+        <small>ID: ${record.id}</small><br />
+        <small><a href="${record.url}" target="_blank">${record.url}</a></small><br />
+        <small>${fileSizeMB} MB • ${displayDate}</small>
+    </div>
+    <div class="actions">
+        <img src="/img/repeat.png" class="icon-btn repeat-icon" title="Повторить" />
+        <img src="/img/trash.png" class="icon-btn trash-icon" alt="Удалить" title="Удалить" />
+    </div>
+</div>`;
         list.insertAdjacentHTML("beforeend", item);
     });
 

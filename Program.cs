@@ -1,4 +1,8 @@
+using Web_Downloader_Hub.Serivce;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<HistoryStatService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews()

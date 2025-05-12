@@ -38,7 +38,6 @@ document.getElementById("downloadForm").addEventListener("submit", function (e) 
                 <small>${fileSizeMB} MB • ${displayDate}</small>
             </div>
             <div class="btn-group actions">
-                <img src="/img/repeat.png" class="icon-btn repeat-icon" alt="Повторить" title="Повторить" />
                 <img src="/img/trash.png" class="icon-btn trash-icon" alt="Удалить" title="Удалить" />
             </div>
         </div>
