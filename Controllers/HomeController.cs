@@ -93,10 +93,6 @@ namespace Web_Downloader_Hub.Controllers
             return View();
         }
 
-        public IActionResult History()
-        {
-            return View();
-        }
         public IActionResult Privacy()
         {
             return View();

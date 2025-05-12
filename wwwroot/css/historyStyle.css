@@ -3,8 +3,118 @@
     font-family: 'Segoe UI', sans-serif;
 }
 
+/* Верхняя навигация */
 .topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
+/* Панель суммарных данных и сортировки */
+.summary-sort-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: #f0f2f5;
+    border-radius: 8px;
+    flex-wrap: wrap;
+}
+
+/* Блок с данными (слева) */
+.summary-info {
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* Селектор сортировки (справа) */
+.sort-dropdown select {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    font-size: 0.95rem;
+}
+
+/* Элемент истории */
+.history-list .file-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: box-shadow 0.2s ease;
+}
+
+    .history-list .file-item:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+/* Информация о файле */
+.file-details {
+    flex-grow: 1;
+}
+
+    .file-details strong {
+        font-size: 1rem;
+        display: block;
+    }
+
+    .file-details small a {
+        color: #007bff;
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+
+/* Кнопки действий */
+.actions {
+    display: flex;
+    align-items: center;
+}
+
+    .actions img {
+        width: 28px;
+        height: 28px;
+        margin-left: 12px;
+        cursor: pointer;
+        transition: transform 0.25s ease, filter 0.25s ease;
+    }
+
+.repeat-icon {
+    filter: hue-rotate(90deg) brightness(1.2);
+}
+
+.trash-icon {
+    filter: hue-rotate(-20deg) brightness(1.1) saturate(1.5);
+    margin-right: 4px;
+}
+
+.actions img:hover {
+    transform: scale(1.25) translateY(-2px);
+    filter: brightness(1.6) saturate(1.2);
+}
+
+/* Навигация страниц */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+    .pagination button {
+        padding: 6px 12px;
+        margin: 0 4px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+        .pagination button:hover {
+            background-color: #e6e6e6;
+        }

@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "История загрузок";
+}
+<link rel="stylesheet" href="~/css/historyStyle.css" asp-append-version="true" />
+
+<div class="container mt-4">
+    <div class="topbar">
+        <h2>Web Downloader Hub</h2>
+        <div>
+            <a class="btn btn-secondary me-2" href="/Home/Index">Главная</a>
+            <a class="btn btn-primary" href="/History/Index">История</a>
+        </div>
+    </div>
+
+    <!-- Панель с инфой и сортировкой -->
+    <div class="summary-sort-bar">
+        <div>
+            <strong>Записей:</strong> <span id="recordCount">0</span> |
+            <strong>Общий размер:</strong> <span id="totalSize">0.00</span> MB
+        </div>
+        <div>
+            <select id="sortSelect" class="form-select">
+                <option value="date-desc">Сначала новые</option>
+                <option value="date-asc">Сначала старые</option>
+                <option value="size-desc">По размеру ⬇</option>
+                <option value="size-asc">По размеру ⬆</option>
+                <option value="name-asc">По алфавиту A-Z</option>
+                <option value="name-desc">По алфавиту Z-A</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Список записей -->
+    <div id="historyList" class="history-list"></div>
+
+    <!-- Пагинация -->
+    <div class="pagination-container mt-3 text-center">
+        <button id="prevPage" class="btn btn-outline-primary me-2">Назад</button>
+        <span id="pageIndicator">1 / 1</span>
+        <button id="nextPage" class="btn btn-outline-primary ms-2">Вперёд</button>
+    </div>
+</div>
+
+<script src="~/js/historyScript.js" asp-append-version="true"></script>
