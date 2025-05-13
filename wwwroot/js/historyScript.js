@@ -85,3 +85,50 @@ function sortRecords() {
             break;
     }
 }
+
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("trash-icon")) {
+        const fileItem = e.target.closest(".file-item");
+        if (!fileItem) return;
+
+        const id = fileItem.dataset.id;
+        const filepath = fileItem.dataset.filepath;
+        const filename = fileItem.querySelector("strong").textContent;
+        const url = fileItem.querySelector("a").href;
+        const infoText = fileItem.querySelectorAll("small")[2].textContent;
+        const fileSize = extractFileSize(infoText);
+
+        const record = {
+            id: id,
+            filepath: filepath,
+            filename: filename,
+            url: url,
+            fileSize: fileSize,
+            downloadDate: new Date().toISOString()
+        };
+
+        fetch("/history/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(record)
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Ошибка при удалении записи из истории.");
+                // Удалить из DOM
+                fileItem.remove();
+                // Удалить из массива
+                allRecords = allRecords.filter(r => r.id !== id);
+                updateSummary();
+                renderPage(currentPage);
+            })
+            .catch(error => alert(error.message));
+    }
+});
+
+function extractFileSize(text) {
+    // пример строки: "1.25 MB • 11.05.2025" или "1,25 MB • 11.05.2025"
+    const match = text.match(/([\d.,]+)\s*MB/i);
+    if (!match) return 0;
+    const number = match[1].replace(",", ".");
+    return Math.round(parseFloat(number) * 1048576); // MB → bytes
+}
