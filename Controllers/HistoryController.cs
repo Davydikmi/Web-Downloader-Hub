@@ -36,5 +36,36 @@ namespace Web_Downloader_Hub.Controllers
             }
         }
 
+        [HttpPost("/history/repeat")]
+        public IActionResult RepeatDownloadMeta([FromBody] DownloadRecord record)
+        {
+            if (record == null || string.IsNullOrEmpty(record.url))
+                return BadRequest("Недопустимая запись.");
+
+            record.Id = Guid.NewGuid();
+            record.DownloadDate = DateTime.UtcNow;
+
+            try
+            {
+                HistoryStatService historyStatService = new HistoryStatService();
+                historyStatService.AddRecord(record);
+
+                return Ok(record); // отправляем обновлённую запись обратно
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("/history/download")]
+        public IActionResult DownloadFile([FromQuery] string filepath, [FromQuery] string filename)
+        {
+            DownloadService _downloadService = new DownloadService();
+            var result = _downloadService.PrepareDownload(new List<string>() { filepath });
+            return File(result.Data, result.ContentType, filename);
+        }
+
+
     }
 }

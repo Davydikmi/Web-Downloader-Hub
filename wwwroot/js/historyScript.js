@@ -132,3 +132,63 @@ function extractFileSize(text) {
     const number = match[1].replace(",", ".");
     return Math.round(parseFloat(number) * 1048576); // MB → bytes
 }
+
+
+document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("repeat-icon")) {
+        const fileItem = e.target.closest(".file-item");
+        if (!fileItem) return;
+
+        const filepath = fileItem.dataset.filepath;
+        const filename = fileItem.querySelector("strong").textContent;
+        const url = fileItem.querySelector("a").href;
+        const infoText = fileItem.querySelectorAll("small")[2].textContent;
+        const fileSize = extractFileSize(infoText);
+
+        const record = {
+            filepath: filepath,
+            filename: filename,
+            url: url,
+            fileSize: fileSize,
+            downloadDate: new Date().toISOString()
+        };
+
+        // Сначала отправляем метаданные и получаем новый ID
+        fetch("/history/repeat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(record)
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Ошибка при повторной загрузке.");
+                return res.json();
+            })
+            .then(newRecord => {
+                // Скачиваем файл по новому пути
+                const params = new URLSearchParams({
+                    filepath: newRecord.filepath,
+                    filename: newRecord.filename
+                });
+
+                return fetch("/history/download?" + params.toString())
+                    .then(response => {
+                        if (!response.ok) throw new Error("Ошибка при скачивании файла.");
+                        return response.blob().then(blob => ({ blob, response, newRecord }));
+                    });
+            })
+            .then(({ blob, response, newRecord }) => {
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = newRecord.filename;
+                link.click();
+
+                alert("Файл успешно повторно загружен и добавлен в историю.");
+
+                allRecords.unshift(newRecord);
+                updateSummary();
+                renderPage(1);
+            })
+            .catch(err => alert(err.message));
+    }
+});
+
