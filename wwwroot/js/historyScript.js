@@ -125,15 +125,6 @@ document.addEventListener("click", function (e) {
     }
 });
 
-function extractFileSize(text) {
-    // пример строки: "1.25 MB • 11.05.2025" или "1,25 MB • 11.05.2025"
-    const match = text.match(/([\d.,]+)\s*MB/i);
-    if (!match) return 0;
-    const number = match[1].replace(",", ".");
-    return Math.round(parseFloat(number) * 1048576); // MB → bytes
-}
-
-
 document.addEventListener("click", function (e) {
     if (e.target.classList.contains("repeat-icon")) {
         const fileItem = e.target.closest(".file-item");
@@ -192,3 +183,34 @@ document.addEventListener("click", function (e) {
     }
 });
 
+
+document.getElementById("clearListBtn").addEventListener("click", function () {
+    if (allRecords.length === 0) return;
+
+    fetch("/history/clear-all", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(allRecords)
+    })
+        .then(response => {
+            if (!response.ok) throw new Error("Не удалось очистить историю загрузок.");
+
+            // Успешно удалено на сервере
+            allRecords = [];
+            updateSummary();
+            renderPage(1); // Показываем первую (пустую) страницу
+
+            alert("История успешно очищена.");
+        })
+        .catch(error => alert(error.message));
+});
+
+
+
+function extractFileSize(text) {
+    // пример строки: "1.25 MB • 11.05.2025" или "1,25 MB • 11.05.2025"
+    const match = text.match(/([\d.,]+)\s*MB/i);
+    if (!match) return 0;
+    const number = match[1].replace(",", ".");
+    return Math.round(parseFloat(number) * 1048576); // MB → bytes
+}

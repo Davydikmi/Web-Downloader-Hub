@@ -66,6 +66,22 @@ namespace Web_Downloader_Hub.Controllers
             return File(result.Data, result.ContentType, filename);
         }
 
+        [HttpPost("/history/clear-all")]
+        public IActionResult ClearAll([FromBody] List<DownloadRecord> records)
+        {
+            DownloadService _downloadService = new DownloadService();
+            try
+            {
+                _downloadService.DeleteFiles(records);
+                return Ok(new { count = records.Count });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
     }
 }
