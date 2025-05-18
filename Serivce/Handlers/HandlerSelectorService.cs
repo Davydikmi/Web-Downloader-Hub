@@ -11,6 +11,10 @@
 
             else if (url.Contains("x.com")) return new TwitterDownloadHandler();
 
+            else if (url.Contains("instagram.com")) return new InstagramDownloadHandler();
+
+            else if (url.Contains("tiktok.com")) return new TikTokDownloadHandler();
+
             return new HttpDownloadHandler();
 
         }
